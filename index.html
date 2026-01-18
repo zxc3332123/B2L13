@@ -205,12 +205,14 @@
     <!-- JavaScript for Dynamic Content -->
     <script>
         // Mock Data based on typical Modern Chinese Book 2 curriculum
+        // 【重要】您可以在這裡編輯每一課的 'link' 屬性來自訂連結
         const lessonsData = [
             {
                 id: 1,
                 title: "這件衣服很適合你",
-                topic: "life", // For filtering
+                topic: "life", 
                 desc: "購買衣物、顏色與尺寸的表達",
+                link: "https://example.com/lesson1", // 在此處修改連結
                 grammar: [
                     { pattern: "V + 著", desc: "表示狀態持續 (穿著、戴著)" },
                     { pattern: "有點 + Adj", desc: "表示不滿意或負面評價" },
@@ -224,6 +226,7 @@
                 title: "你要租什麼樣的房子",
                 topic: "life",
                 desc: "租屋需求、詢問環境與設施",
+                link: "#", // 在此處修改連結
                 grammar: [
                     { pattern: "連...都...", desc: "強調極端的情況" },
                     { pattern: "V + 不下", desc: "空間容納不下" },
@@ -237,6 +240,7 @@
                 title: "去郵局怎麼走",
                 topic: "travel",
                 desc: "問路、方向與距離",
+                link: "#", // 在此處修改連結
                 grammar: [
                     { pattern: "往...走/轉", desc: "指示方向" },
                     { pattern: "離...很近/遠", desc: "描述距離" },
@@ -250,6 +254,7 @@
                 title: "我要寄這兩個包裹",
                 topic: "life",
                 desc: "郵局辦事、寄信與包裹",
+                link: "#", // 在此處修改連結
                 grammar: [
                     { pattern: "把 + O + V...", desc: "處置式 (把信寄了)" },
                     { pattern: "順便", desc: "做主要動作時附帶做某事" },
@@ -263,6 +268,7 @@
                 title: "我若是你就去看醫生",
                 topic: "life",
                 desc: "生病症狀、看醫生建議",
+                link: "#", // 在此處修改連結
                 grammar: [
                     { pattern: "看起來", desc: "視覺推測" },
                     { pattern: "最好", desc: "提出建議" },
@@ -276,6 +282,7 @@
                 title: "去哪裡旅行好",
                 topic: "travel",
                 desc: "討論旅行計畫、風景",
+                link: "#", // 在此處修改連結
                 grammar: [
                     { pattern: "不但...而且...", desc: "遞進關係" },
                     { pattern: "比...更...", desc: "比較級的加強" },
@@ -289,6 +296,7 @@
                 title: "這些菜很有台灣味",
                 topic: "life",
                 desc: "台灣小吃、口味描述",
+                link: "#", // 在此處修改連結
                 grammar: [
                     { pattern: "越來越...", desc: "隨時間變化" },
                     { pattern: "V + 起來", desc: "感官評價 (吃起來)" },
@@ -302,6 +310,7 @@
                 title: "參加社團活動",
                 topic: "school",
                 desc: "校園生活、興趣與活動",
+                link: "#", // 在此處修改連結
                 grammar: [
                     { pattern: "V + 下去", desc: "動作繼續" },
                     { pattern: "對...有興趣", desc: "表達興趣" },
@@ -315,6 +324,7 @@
                 title: "你打工過嗎",
                 topic: "work",
                 desc: "打工經驗、面試",
+                link: "#", // 在此處修改連結
                 grammar: [
                     { pattern: "V + 過", desc: "過去的經驗" },
                     { pattern: "適合/合適", desc: "形容詞與動詞區別" },
@@ -349,6 +359,8 @@
         function createLessonCard(lesson) {
             const grammarTags = lesson.grammar.map(g => createGrammarTag(g.pattern, g.desc)).join('');
             
+            // 使用 lesson.link 替換 href="#"
+            // target="_blank" 確保在開新視窗打開連結
             return `
                 <div class="grammar-card bg-white rounded-xl border border-gray-100 shadow-sm overflow-hidden flex flex-col h-full" id="lesson-${lesson.id}">
                     <div class="p-6 flex-grow">
@@ -369,7 +381,7 @@
                         </div>
                     </div>
                     <div class="bg-gray-50 px-6 py-4 flex justify-between items-center">
-                        <a href="#" class="text-blue-600 hover:text-blue-800 text-sm font-medium transition flex items-center gap-1">
+                        <a href="${lesson.link || '#'}" target="_blank" class="text-blue-600 hover:text-blue-800 text-sm font-medium transition flex items-center gap-1">
                             開始學習 <i class="fa-solid fa-arrow-right text-xs"></i>
                         </a>
                         <button class="text-gray-400 hover:text-yellow-500 transition">
