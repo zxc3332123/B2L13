@@ -3,745 +3,515 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>語法特訓：代號「可」</title>
+    <title>清新語法大挑戰：比、比較、比起來</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/react@18/umd/react.development.js"></script>
+    <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700&display=swap" rel="stylesheet">
     <style>
-        :root {
-            --primary: #00f3ff;
-            --secondary: #7000ff;
-            --accent: #ff0055;
-            --bg-dark: #0b0d17;
-            --bg-panel: #15192b;
-            --text-main: #e0e6ed;
-            --font-tech: 'Courier New', Courier, monospace;
-        }
-
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-            user-select: none;
-        }
-
         body {
-            background-color: var(--bg-dark);
-            color: var(--text-main);
-            font-family: "Segoe UI", "Microsoft JhengHei", sans-serif;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            min-height: 100vh;
-            overflow-x: hidden;
-            background-image: 
-                linear-gradient(rgba(0, 243, 255, 0.05) 1px, transparent 1px),
-                linear-gradient(90deg, rgba(0, 243, 255, 0.05) 1px, transparent 1px);
-            background-size: 30px 30px;
+            font-family: 'Noto Sans TC', sans-serif;
+            background: linear-gradient(135deg, #e0f2fe 0%, #f0fdf4 100%);
         }
-
-        /* Scanline effect */
-        body::after {
-            content: "";
+        .fade-in {
+            animation: fadeIn 0.5s ease-out;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .confetti {
             position: absolute;
-            top: 0;
-            left: 0;
-            width: 100vw;
-            height: 100vh;
-            background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.25) 50%), linear-gradient(90deg, rgba(255, 0, 0, 0.06), rgba(0, 255, 0, 0.02), rgba(0, 0, 255, 0.06));
-            background-size: 100% 2px, 3px 100%;
-            pointer-events: none;
-            z-index: 999;
+            width: 10px;
+            height: 10px;
+            background-color: #f00;
+            animation: fall linear forwards;
         }
-
-        .container {
-            width: 90%;
-            max-width: 800px;
-            background: rgba(21, 25, 43, 0.9);
-            border: 1px solid var(--primary);
-            box-shadow: 0 0 20px rgba(0, 243, 255, 0.2);
-            border-radius: 10px;
-            padding: 2rem;
-            position: relative;
-            backdrop-filter: blur(10px);
-            min-height: 500px;
-            display: flex;
-            flex-direction: column;
-        }
-
-        /* Header UI */
-        .hud-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            border-bottom: 2px solid var(--secondary);
-            padding-bottom: 1rem;
-            margin-bottom: 2rem;
-        }
-
-        .title {
-            font-family: var(--font-tech);
-            color: var(--primary);
-            text-transform: uppercase;
-            letter-spacing: 2px;
-            text-shadow: 0 0 5px var(--primary);
-            font-size: 1.5rem;
-        }
-
-        .status-bar {
-            display: flex;
-            gap: 1rem;
-            font-family: var(--font-tech);
-            font-size: 0.9rem;
-        }
-
-        .status-item span {
-            color: var(--accent);
-            font-weight: bold;
-        }
-
-        /* Game Screens */
-        .screen {
-            display: none;
-            flex-direction: column;
-            align-items: center;
-            width: 100%;
-            flex-grow: 1;
-        }
-
-        .screen.active {
-            display: flex;
-        }
-
-        /* Welcome Screen */
-        .welcome-text {
-            text-align: center;
-            margin-bottom: 2rem;
-            line-height: 1.6;
-        }
-
-        .btn {
-            background: transparent;
-            border: 2px solid var(--primary);
-            color: var(--primary);
-            padding: 1rem 2rem;
-            font-size: 1.2rem;
-            cursor: pointer;
-            transition: all 0.3s;
-            font-family: var(--font-tech);
-            text-transform: uppercase;
-            letter-spacing: 2px;
-            position: relative;
-            overflow: hidden;
-        }
-
-        .btn:hover {
-            background: var(--primary);
-            color: var(--bg-dark);
-            box-shadow: 0 0 15px var(--primary);
-        }
-
-        .btn-secondary {
-            border-color: var(--secondary);
-            color: var(--secondary);
-        }
-
-        .btn-secondary:hover {
-            background: var(--secondary);
-            color: #fff;
-            box-shadow: 0 0 15px var(--secondary);
-        }
-
-        /* Question Area */
-        .question-card {
-            width: 100%;
-            margin-bottom: 2rem;
-        }
-
-        .question-type {
-            color: var(--secondary);
-            font-size: 0.9rem;
-            margin-bottom: 0.5rem;
-            text-transform: uppercase;
-            font-family: var(--font-tech);
-        }
-
-        .question-text {
-            font-size: 1.4rem;
-            margin-bottom: 1.5rem;
-            line-height: 1.5;
-            background: rgba(0, 0, 0, 0.3);
-            padding: 1.5rem;
-            border-left: 4px solid var(--accent);
-        }
-
-        .highlight {
-            color: var(--primary);
-            font-weight: bold;
-            text-shadow: 0 0 5px var(--primary);
-        }
-
-        /* Options (Multiple Choice) */
-        .options-grid {
-            display: grid;
-            grid-template-columns: 1fr;
-            gap: 1rem;
-            width: 100%;
-        }
-
-        .option-btn {
-            background: rgba(255, 255, 255, 0.05);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            padding: 1rem;
-            text-align: left;
-            cursor: pointer;
-            transition: 0.2s;
-            color: var(--text-main);
-        }
-
-        .option-btn:hover {
-            border-color: var(--primary);
-            background: rgba(0, 243, 255, 0.1);
-        }
-
-        .option-btn.selected {
-            background: var(--primary);
-            color: var(--bg-dark);
-            font-weight: bold;
-        }
-
-        /* Drag/Sort Styles */
-        .sort-container {
-            width: 100%;
-        }
-
-        .drop-zone {
-            min-height: 60px;
-            border-bottom: 2px dashed var(--primary);
-            margin-bottom: 1.5rem;
-            display: flex;
-            flex-wrap: wrap;
-            gap: 0.5rem;
-            padding: 0.5rem;
-            align-items: center;
-        }
-
-        .word-bank {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 0.5rem;
-            justify-content: center;
-        }
-
-        .word-chip {
-            background: rgba(112, 0, 255, 0.2);
-            border: 1px solid var(--secondary);
-            padding: 0.5rem 1rem;
-            cursor: pointer;
-            border-radius: 4px;
-            transition: 0.2s;
-        }
-
-        .word-chip:hover {
-            background: var(--secondary);
-            color: white;
-        }
-
-        /* Fill in Blank Styles */
-        .fill-input {
-            background: transparent;
-            border: none;
-            border-bottom: 2px solid var(--primary);
-            color: var(--primary);
-            font-size: 1.2rem;
-            text-align: center;
-            width: 100px;
-            margin: 0 5px;
-            outline: none;
-        }
-
-        /* Feedback Modal */
-        .feedback-overlay {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(11, 13, 23, 0.9);
-            display: none;
-            justify-content: center;
-            align-items: center;
-            flex-direction: column;
-            z-index: 10;
-            backdrop-filter: blur(5px);
-        }
-
-        .feedback-content {
-            text-align: center;
-            max-width: 80%;
-        }
-
-        .feedback-title {
-            font-size: 2rem;
-            margin-bottom: 1rem;
-            font-family: var(--font-tech);
-        }
-
-        .correct { color: #00ff66; text-shadow: 0 0 10px #00ff66; }
-        .wrong { color: #ff0055; text-shadow: 0 0 10px #ff0055; }
-
-        .feedback-text {
-            font-size: 1.1rem;
-            margin-bottom: 2rem;
-            color: #ccc;
-        }
-
-        /* Results */
-        .score-display {
-            font-size: 4rem;
-            color: var(--primary);
-            margin: 2rem 0;
-            font-family: var(--font-tech);
-        }
-
-        /* Animation */
-        @keyframes glitch {
-            0% { transform: translate(0); }
-            20% { transform: translate(-2px, 2px); }
-            40% { transform: translate(-2px, -2px); }
-            60% { transform: translate(2px, 2px); }
-            80% { transform: translate(2px, -2px); }
-            100% { transform: translate(0); }
-        }
-
-        .glitch-effect {
-            animation: glitch 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94) both;
-        }
-
-        /* Mobile Adjustments */
-        @media (max-width: 600px) {
-            .container {
-                width: 95%;
-                padding: 1rem;
-            }
-            .question-text {
-                font-size: 1.1rem;
-            }
+        @keyframes fall {
+            to { transform: translateY(100vh) rotate(720deg); }
         }
     </style>
 </head>
-<body>
+<body class="min-h-screen flex items-center justify-center p-4">
 
-<div class="container">
-    <!-- Header -->
-    <div class="hud-header">
-        <div class="title">GRAMMAR::KE</div>
-        <div class="status-bar">
-            <div class="status-item">題目: <span id="q-num">01/10</span></div>
-            <div class="status-item">能量: <span id="score">0</span>%</div>
-        </div>
-    </div>
+    <div id="root" class="w-full max-w-2xl"></div>
 
-    <!-- Screen 1: Welcome -->
-    <div id="screen-welcome" class="screen active">
-        <h1 style="color: var(--primary); margin-bottom: 1rem; text-shadow: 0 0 10px var(--primary);">語法同步程序</h1>
-        <div class="welcome-text">
-            <p>檢測到第 13-16 課的語言數據碎片。</p>
-            <p>任務目標：修復關於<strong>「可」</strong>的語法邏輯。</p>
-            <p style="color: var(--secondary); margin-top: 1rem;">
-                <small>說明：「可」用在動詞或形容詞前，表示強調語氣。</small><br>
-                <small>ex. 運動<strong>可</strong>重要了！(強調程度)</small>
-            </p>
-        </div>
-        <button class="btn" onclick="game.start()">啟動任務</button>
-    </div>
+    <script type="text/babel">
+        const { useState, useEffect } = React;
 
-    <!-- Screen 2: Game -->
-    <div id="screen-game" class="screen">
-        <div class="question-card">
-            <div class="question-type" id="q-type">Type Loading...</div>
-            <div class="question-text" id="q-text">Loading Data...</div>
-            
-            <!-- Dynamic Content Area -->
-            <div id="game-area"></div>
-        </div>
+        // --- SVG Icons Components ---
+        // Replacing external library with inline SVGs to prevent runtime errors
         
-        <button class="btn btn-secondary" id="submit-btn" onclick="game.checkAnswer()">確認數據</button>
-    </div>
+        const BookOpen = ({ size = 24, className = "" }) => (
+            <svg xmlns="http://www.w3.org/2000/svg" width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}>
+                <path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"></path>
+                <path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"></path>
+            </svg>
+        );
 
-    <!-- Screen 3: Results -->
-    <div id="screen-result" class="screen">
-        <h2>任務報告</h2>
-        <div class="score-display"><span id="final-score">0</span>%</div>
-        <p id="result-msg" style="margin-bottom: 2rem;">正在分析...</p>
-        <button class="btn" onclick="game.restart()">重啟系統</button>
-    </div>
+        const ArrowRight = ({ size = 24, className = "" }) => (
+            <svg xmlns="http://www.w3.org/2000/svg" width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}>
+                <line x1="5" y1="12" x2="19" y2="12"></line>
+                <polyline points="12 5 19 12 12 19"></polyline>
+            </svg>
+        );
 
-    <!-- Feedback Overlay -->
-    <div id="feedback-overlay" class="feedback-overlay">
-        <div class="feedback-content">
-            <h2 id="fb-title" class="feedback-title"></h2>
-            <p id="fb-text" class="feedback-text"></p>
-            <button class="btn" onclick="game.nextQuestion()">繼續</button>
-        </div>
-    </div>
-</div>
+        const Trophy = ({ size = 24, className = "" }) => (
+            <svg xmlns="http://www.w3.org/2000/svg" width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}>
+                <path d="M8 21h8"></path>
+                <path d="M12 17v4"></path>
+                <path d="M12 17a5 5 0 0 0 5-5V6H7v6a5 5 0 0 0 5 5z"></path>
+                <path d="M17 6h3a2 2 0 0 1 2 2v2a2 2 0 0 1-2 2h-3"></path>
+                <path d="M7 6H4a2 2 0 0 0-2 2v2a2 2 0 0 0 2 2h3"></path>
+            </svg>
+        );
 
-<script>
-    // Game Data: 10 Questions mixed types
-    // Types: 'choice' (Single Choice), 'sort' (Sentence Scramble), 'fill' (Fill in blank)
-    const questions = [
-        {
-            type: 'choice',
-            label: '選擇題',
-            text: '選出語氣最強烈的句子，表達「筆電非常輕」：',
-            content: {
-                options: [
-                    '現在的筆電很輕。',
-                    '現在的筆電有一點兒輕。',
-                    '現在的筆電可輕了，一隻手就拿得動。',
-                    '現在的筆電比以前輕。'
-                ]
-            },
-            answer: 2, // Index
-            explanation: "「可 + Vs + 了」表示強調程度非常高。這裡強調現在的筆電「非常」輕。"
-        },
-        {
-            type: 'fill',
-            label: '選詞填空',
-            text: '孔子_____偉大呢，他的思想影響了東方文化幾千年。',
-            content: {
-                hint: '(請填入強調語氣的詞)'
-            },
-            answer: ['可'],
-            explanation: "這裡需要一個強調詞，表示孔子的偉大程度很高。「可 + Vs」用於強調。"
-        },
-        {
-            type: 'sort',
-            label: '重組句子',
-            text: '請將詞彙重組為通順的句子 (強調聲音很大)：',
-            content: {
-                words: ['大呢', '聲音', '鞭炮', '可', '的']
-            },
-            answer: ['鞭炮', '的', '聲音', '可', '大呢'],
-            explanation: "正確語序：鞭炮的聲音(S) + 可(Adv) + 大呢(Vs)。"
-        },
-        {
-            type: 'choice',
-            label: '選擇題',
-            text: '關於「你可來了，我等你等得都快睡著了。」這句話的意思，下列何者正確？',
-            content: {
-                options: [
-                    '你可能不會來了。',
-                    '你終於來了 (帶有埋怨或期待已久的語氣)。',
-                    '你可以來，也可以不來。',
-                    '你來得很快。'
-                ]
-            },
-            answer: 1,
-            explanation: "「可 + V」在這種語境下，表示盼望已久的事情終於發生了，常含有「終於」的意思。"
-        },
-        {
-            type: 'choice',
-            label: '選擇題',
-            text: '選出正確的句子填空：\n那個納豆聞起來_____，我不敢吃。',
-            content: {
-                options: [
-                    '可臭了',
-                    '可臭',
-                    '很臭了',
-                    '真臭了'
-                ]
-            },
-            answer: 0,
-            explanation: "強調形容詞程度時，常用結構為「可 + Vs + 了」。"
-        },
-        {
-            type: 'sort',
-            label: '重組句子',
-            text: '請將詞彙重組 (強調學生的特質)：',
-            content: {
-                words: ['那', '有禮貌了', '學生', '可', '位']
-            },
-            answer: ['那', '位', '學生', '可', '有禮貌了'],
-            explanation: "正確語序：那位學生(S) + 可(Adv) + 有禮貌了(Vs)。"
-        },
-        {
-            type: 'fill',
-            label: '選詞填空',
-            text: '這次的世界文化日_____熱鬧了，連校長都親自參加了！',
-            content: {
-                hint: '(請填入強調語氣的詞)'
-            },
-            answer: ['可'],
-            explanation: "「可 + 熱鬧 + 了」強調場面非常熱鬧。"
-        },
-        {
-            type: 'sort',
-            label: '重組句子',
-            text: '請將詞彙重組 (強調年糕好吃)：',
-            content: {
-                words: ['可', '好吃了', '媽媽', '年糕', '做的']
-            },
-            answer: ['媽媽', '做的', '年糕', '可', '好吃了'],
-            explanation: "正確語序：媽媽做的年糕(S) + 可(Adv) + 好吃了(Vs)。"
-        },
-        {
-            type: 'choice',
-            label: '選擇題',
-            text: '兩小兒辯日時，孔子認為中午的太陽怎麼樣？\n句子：中午的太陽_____，感覺像火一樣。',
-            content: {
-                options: [
-                    '熱可熱',
-                    '可熱了',
-                    '可熱',
-                    '可不熱'
-                ]
-            },
-            answer: 1,
-            explanation: "「可熱了」是最自然且符合語法的強調用法。"
-        },
-        {
-            type: 'fill',
-            label: '選詞填空',
-            text: '平板電腦的這個新功能_____方便了，幫我解決了很多問題。',
-            content: {
-                hint: '(請填入強調語氣的詞)'
-            },
-            answer: ['可'],
-            explanation: "「可」用來強調「方便」的程度很高。"
-        }
-    ];
+        const Star = ({ size = 24, className = "" }) => (
+            <svg xmlns="http://www.w3.org/2000/svg" width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}>
+                <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon>
+            </svg>
+        );
 
-    const game = {
-        state: {
-            currentIdx: 0,
-            score: 0,
-            userAnswer: null, // Stores index for choice, string for fill, array for sort
-            shuffledWords: [] // specific for sort type
-        },
+        const RefreshCw = ({ size = 24, className = "" }) => (
+            <svg xmlns="http://www.w3.org/2000/svg" width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}>
+                <polyline points="23 4 23 10 17 10"></polyline>
+                <polyline points="1 20 1 14 7 14"></polyline>
+                <path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"></path>
+            </svg>
+        );
 
-        init: function() {
-            this.updateHeader();
-        },
+        const CheckCircle = ({ size = 24, className = "" }) => (
+            <svg xmlns="http://www.w3.org/2000/svg" width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}>
+                <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
+                <polyline points="22 4 12 14.01 9 11.01"></polyline>
+            </svg>
+        );
 
-        start: function() {
-            this.state.currentIdx = 0;
-            this.state.score = 0;
-            this.switchScreen('game');
-            this.renderQuestion();
-        },
+        const XCircle = ({ size = 24, className = "" }) => (
+            <svg xmlns="http://www.w3.org/2000/svg" width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}>
+                <circle cx="12" cy="12" r="10"></circle>
+                <line x1="15" y1="9" x2="9" y2="15"></line>
+                <line x1="9" y1="9" x2="15" y2="15"></line>
+            </svg>
+        );
 
-        restart: function() {
-            this.start();
-        },
+        // 題目資料庫 (結合 L13-L16 生詞與語法)
+        const questionsData = [
+            {
+                id: 1,
+                type: 'choice',
+                lesson: 'L13',
+                question: '這台筆電只有一公斤，那台有兩公斤，這台___那台輕。',
+                options: ['比較', '比', '比起來', '或是'],
+                answer: '比',
+                explanation: '「A 比 B + 形容詞」是用來比較兩個東西的句型。'
+            },
+            {
+                id: 2,
+                type: 'choice',
+                lesson: 'L16',
+                question: '雖然納豆很有名，但我還是覺得台灣的臭豆腐味道___臭。',
+                options: ['比', '比較', '比起來', '不如'],
+                answer: '比較',
+                explanation: '當句子裡沒有出現比較的對象（B），或者是在最後做結論時，常用「比較」。'
+            },
+            {
+                id: 3,
+                type: 'order',
+                lesson: 'L13',
+                question: '請重組句子：',
+                words: ['這款手機', '筆電', '比', '便宜', '很多'],
+                answer: '這款手機比筆電便宜很多',
+                explanation: '結構：A + 比 + B + 形容詞 + 程度副詞（很多/一點兒）。'
+            },
+            {
+                id: 4,
+                type: 'fill',
+                lesson: 'L15',
+                question: '跟古代___，現代人的生活方便多了。',
+                answer: '比起來',
+                explanation: '句型：「跟/和 + (名詞) + 比起來，...」。'
+            },
+            {
+                id: 5,
+                type: 'choice',
+                lesson: 'L14',
+                question: '過年的時候，鄉下___城市熱鬧，因為大家都會放鞭炮。',
+                options: ['比較', '比', '越來越', '比起來'],
+                answer: '比',
+                explanation: '比較兩個地點的氣氛：鄉下 比 城市 熱鬧。'
+            },
+            {
+                id: 6,
+                type: 'order',
+                lesson: 'L16',
+                question: '請重組句子：',
+                words: ['昨天的', '表演', '比', '精彩', '今天的'],
+                // 接受兩種答案
+                answer: ['昨天的表演比今天的精彩', '今天的表演比昨天的精彩'],
+                explanation: '比較兩個時間點的表演內容，兩種順序皆通順。'
+            },
+            {
+                id: 7,
+                type: 'choice',
+                lesson: 'L13',
+                question: '這兩個產品功能差不多，可是這個螢幕___大。',
+                options: ['比', '不比', '比較', '比起來'],
+                answer: '比較',
+                explanation: '雖然前面提到了兩個產品，但後半句省略了比較的對象，強調「這一個」的特質，用「比較」。'
+            },
+            {
+                id: 8,
+                type: 'fill',
+                lesson: 'L15',
+                question: '孔子認為，做人___讀書更重要。(提示：一個字)',
+                answer: '比',
+                explanation: 'A (做人) 比 B (讀書) + 形容詞 (重要)。'
+            },
+            {
+                id: 9,
+                type: 'order',
+                lesson: 'L15',
+                question: '請重組句子：',
+                words: ['寫漢字', '比', '難', '說中文', '多了'],
+                answer: '寫漢字比說中文難多了',
+                explanation: '程度補語「多了」放在形容詞後面，表示差別很大。'
+            },
+            {
+                id: 10,
+                type: 'choice',
+                lesson: 'L14',
+                question: '雖然那件紅色的衣服很喜氣，可是我覺得這件___適合你。',
+                options: ['比', '比較', '比起來', '比較起來'],
+                answer: '比較',
+                explanation: '在心裡權衡後的選擇，常搭配「覺得...比較...」。'
+            }
+        ];
 
-        switchScreen: function(screenName) {
-            document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
-            document.getElementById(`screen-${screenName}`).classList.add('active');
-        },
-
-        updateHeader: function() {
-            document.getElementById('q-num').innerText = `${String(this.state.currentIdx + 1).padStart(2, '0')}/10`;
-            document.getElementById('score').innerText = Math.round((this.state.score / 10) * 100);
-        },
-
-        renderQuestion: function() {
-            const q = questions[this.state.currentIdx];
-            const gameArea = document.getElementById('game-area');
-            const submitBtn = document.getElementById('submit-btn');
+        const App = () => {
+            const [gameState, setGameState] = useState('start'); // start, playing, end
+            const [currentQIndex, setCurrentQIndex] = useState(0);
+            const [score, setScore] = useState(0);
+            const [userAnswer, setUserAnswer] = useState('');
+            const [selectedOrder, setSelectedOrder] = useState([]);
+            const [feedback, setFeedback] = useState(null); // null, correct, wrong
             
-            this.updateHeader();
-            document.getElementById('q-type').innerText = `DATA TYPE: [ ${q.label} ]`;
-            document.getElementById('q-text').innerText = q.text;
-            gameArea.innerHTML = '';
-            submitBtn.disabled = true; // Disable until interaction
-            submitBtn.style.opacity = '0.5';
+            // Confetti effect
+            const fireConfetti = () => {
+                const colors = ['#34d399', '#60a5fa', '#fbbf24', '#f87171'];
+                for (let i = 0; i < 50; i++) {
+                    const confetti = document.createElement('div');
+                    confetti.className = 'confetti';
+                    confetti.style.left = Math.random() * 100 + 'vw';
+                    confetti.style.top = '-10px';
+                    confetti.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
+                    confetti.style.animationDuration = Math.random() * 3 + 2 + 's';
+                    document.body.appendChild(confetti);
+                    setTimeout(() => confetti.remove(), 5000);
+                }
+            };
 
-            this.state.userAnswer = null;
+            const startGame = () => {
+                setGameState('playing');
+                setCurrentQIndex(0);
+                setScore(0);
+                setFeedback(null);
+                setUserAnswer('');
+                setSelectedOrder([]);
+            };
 
-            // Render based on type
-            if (q.type === 'choice') {
-                const grid = document.createElement('div');
-                grid.className = 'options-grid';
-                q.content.options.forEach((opt, idx) => {
-                    const btn = document.createElement('div');
-                    btn.className = 'option-btn';
-                    btn.innerText = `[${String.fromCharCode(65 + idx)}] ${opt}`;
-                    btn.onclick = () => {
-                        document.querySelectorAll('.option-btn').forEach(b => b.classList.remove('selected'));
-                        btn.classList.add('selected');
-                        this.state.userAnswer = idx;
-                        this.enableSubmit();
-                    };
-                    grid.appendChild(btn);
-                });
-                gameArea.appendChild(grid);
+            const handleChoice = (option) => {
+                if (feedback) return;
+                const currentAnswer = questionsData[currentQIndex].answer;
+                // 選擇題通常是單一答案，但為了保險起見也支援陣列
+                let isCorrect = false;
+                if (Array.isArray(currentAnswer)) {
+                    isCorrect = currentAnswer.includes(option);
+                } else {
+                    isCorrect = option === currentAnswer;
+                }
+                processAnswer(isCorrect);
+            };
 
-            } else if (q.type === 'fill') {
-                const wrapper = document.createElement('div');
-                wrapper.style.textAlign = 'center';
-                wrapper.style.marginTop = '2rem';
+            const handleFillSubmit = () => {
+                if (feedback || !userAnswer.trim()) return;
+                const currentAnswer = questionsData[currentQIndex].answer;
+                const input = userAnswer.trim();
                 
-                const input = document.createElement('input');
-                input.type = 'text';
-                input.className = 'fill-input';
-                input.placeholder = '?';
-                input.autocomplete = 'off';
+                let isCorrect = false;
+                if (Array.isArray(currentAnswer)) {
+                    isCorrect = currentAnswer.includes(input);
+                } else {
+                    isCorrect = input === currentAnswer;
+                }
+                processAnswer(isCorrect);
+            };
+
+            const handleOrderSubmit = () => {
+                if (feedback) return;
+                const userSentence = selectedOrder.map(w => w.text).join('');
+                const currentAnswer = questionsData[currentQIndex].answer;
                 
-                input.oninput = (e) => {
-                    this.state.userAnswer = e.target.value.trim();
-                    if(this.state.userAnswer.length > 0) this.enableSubmit();
-                    else this.disableSubmit();
+                let isCorrect = false;
+                if (Array.isArray(currentAnswer)) {
+                    isCorrect = currentAnswer.includes(userSentence);
+                } else {
+                    isCorrect = userSentence === currentAnswer;
+                }
+                processAnswer(isCorrect);
+            };
+
+            const processAnswer = (isCorrect) => {
+                if (isCorrect) setScore(s => s + 10);
+                setFeedback(isCorrect ? 'correct' : 'wrong');
+            };
+
+            const nextQuestion = () => {
+                setFeedback(null);
+                setUserAnswer('');
+                setSelectedOrder([]);
+                
+                if (currentQIndex < questionsData.length - 1) {
+                    setCurrentQIndex(curr => curr + 1);
+                } else {
+                    setGameState('end');
+                    if (score >= 80) fireConfetti();
+                }
+            };
+
+            // Components for different question types
+            const currentQ = questionsData[currentQIndex];
+
+            const renderChoice = () => (
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-6">
+                    {currentQ.options.map((opt, idx) => (
+                        <button
+                            key={idx}
+                            onClick={() => handleChoice(opt)}
+                            disabled={!!feedback}
+                            className={`p-4 rounded-xl text-lg font-medium transition-all shadow-sm border-2
+                                ${feedback 
+                                    ? (opt === currentQ.answer || (Array.isArray(currentQ.answer) && currentQ.answer.includes(opt)))
+                                        ? 'bg-green-100 border-green-400 text-green-700' 
+                                        : 'bg-gray-50 border-gray-200 text-gray-400'
+                                    : 'bg-white border-transparent hover:border-teal-300 hover:shadow-md text-slate-700'
+                                }
+                            `}
+                        >
+                            {opt}
+                        </button>
+                    ))}
+                </div>
+            );
+
+            const renderFill = () => (
+                <div className="mt-6 flex flex-col items-center">
+                    <input
+                        type="text"
+                        value={userAnswer}
+                        onChange={(e) => setUserAnswer(e.target.value)}
+                        placeholder="請輸入答案"
+                        disabled={!!feedback}
+                        className="w-full p-4 text-center text-xl rounded-xl border-2 border-teal-100 focus:border-teal-400 focus:outline-none transition-colors bg-white/80"
+                        onKeyPress={(e) => e.key === 'Enter' && handleFillSubmit()}
+                    />
+                    {!feedback && (
+                        <button
+                            onClick={handleFillSubmit}
+                            className="mt-4 px-8 py-2 bg-teal-500 text-white rounded-full font-bold hover:bg-teal-600 transition-colors shadow-md"
+                        >
+                            送出答案
+                        </button>
+                    )}
+                </div>
+            );
+
+            const renderOrder = () => {
+                // Word Bank handling
+                const handleWordClick = (word, index) => {
+                    if (feedback) return;
+                    const newOrder = [...selectedOrder, { text: word, originalIndex: index }];
+                    setSelectedOrder(newOrder);
                 };
 
-                wrapper.appendChild(input);
-                if(q.content.hint) {
-                    const hint = document.createElement('div');
-                    hint.innerText = q.content.hint;
-                    hint.style.color = '#888';
-                    hint.style.fontSize = '0.8rem';
-                    hint.style.marginTop = '10px';
-                    wrapper.appendChild(hint);
-                }
-                gameArea.appendChild(wrapper);
+                const removeWord = (indexToRemove) => {
+                    if (feedback) return;
+                    const newOrder = selectedOrder.filter((_, idx) => idx !== indexToRemove);
+                    setSelectedOrder(newOrder);
+                };
 
-            } else if (q.type === 'sort') {
-                // Shuffle words specifically for display
-                this.state.shuffledWords = [...q.content.words].sort(() => Math.random() - 0.5);
-                this.state.userAnswer = []; // Array of words
+                return (
+                    <div className="mt-6">
+                        {/* Answer Area */}
+                        <div className="min-h-[60px] bg-white rounded-xl border-2 border-teal-100 p-4 mb-4 flex flex-wrap gap-2 items-center justify-center">
+                            {selectedOrder.length === 0 && <span className="text-gray-400 text-sm">點擊下方詞語重組句子</span>}
+                            {selectedOrder.map((item, idx) => (
+                                <span key={idx} onClick={() => removeWord(idx)} className="cursor-pointer px-3 py-1 bg-teal-100 text-teal-800 rounded-lg shadow-sm hover:bg-red-100 transition-colors">
+                                    {item.text}
+                                </span>
+                            ))}
+                        </div>
 
-                const sortContainer = document.createElement('div');
-                sortContainer.className = 'sort-container';
-
-                // Drop Zone (Answer area)
-                const dropZone = document.createElement('div');
-                dropZone.className = 'drop-zone';
-                dropZone.id = 'drop-zone';
-                
-                // Bank Zone
-                const bankZone = document.createElement('div');
-                bankZone.className = 'word-bank';
-                bankZone.id = 'bank-zone';
-
-                this.state.shuffledWords.forEach((word, idx) => {
-                    const chip = this.createWordChip(word, idx);
-                    bankZone.appendChild(chip);
-                });
-
-                sortContainer.appendChild(dropZone);
-                sortContainer.appendChild(bankZone);
-                gameArea.appendChild(sortContainer);
-            }
-        },
-
-        createWordChip: function(word, id) {
-            const chip = document.createElement('div');
-            chip.className = 'word-chip';
-            chip.innerText = word;
-            chip.dataset.word = word;
-            chip.dataset.id = id;
-            
-            chip.onclick = () => {
-                const dropZone = document.getElementById('drop-zone');
-                const bankZone = document.getElementById('bank-zone');
-                
-                if (chip.parentNode === bankZone) {
-                    // Move to Answer
-                    dropZone.appendChild(chip);
-                    this.state.userAnswer.push(word);
-                } else {
-                    // Move back to Bank
-                    bankZone.appendChild(chip);
-                    // Remove first instance of this word from answer array
-                    const index = this.state.userAnswer.indexOf(word);
-                    if (index > -1) {
-                        this.state.userAnswer.splice(index, 1);
-                    }
-                }
-                
-                if(this.state.userAnswer.length > 0) this.enableSubmit();
-                else this.disableSubmit();
+                        {/* Word Bank */}
+                        <div className="flex flex-wrap gap-3 justify-center">
+                            {currentQ.words.map((word, idx) => {
+                                const isUsed = selectedOrder.some(item => item.originalIndex === idx);
+                                return (
+                                    <button
+                                        key={idx}
+                                        onClick={() => handleWordClick(word, idx)}
+                                        disabled={isUsed || !!feedback}
+                                        className={`px-4 py-2 rounded-lg text-lg font-medium transition-all
+                                            ${isUsed 
+                                                ? 'bg-gray-200 text-gray-400 opacity-50 cursor-default' 
+                                                : 'bg-white border border-teal-200 text-slate-700 shadow-sm hover:-translate-y-1 hover:shadow-md'
+                                            }
+                                        `}
+                                    >
+                                        {word}
+                                    </button>
+                                );
+                            })}
+                        </div>
+                        
+                        {!feedback && selectedOrder.length > 0 && (
+                            <div className="text-center mt-6">
+                                <button
+                                    onClick={handleOrderSubmit}
+                                    className="px-8 py-2 bg-teal-500 text-white rounded-full font-bold hover:bg-teal-600 transition-colors shadow-md"
+                                >
+                                    確認重組
+                                </button>
+                            </div>
+                        )}
+                    </div>
+                );
             };
-            return chip;
-        },
 
-        enableSubmit: function() {
-            const btn = document.getElementById('submit-btn');
-            btn.disabled = false;
-            btn.style.opacity = '1';
-        },
-
-        disableSubmit: function() {
-            const btn = document.getElementById('submit-btn');
-            btn.disabled = true;
-            btn.style.opacity = '0.5';
-        },
-
-        checkAnswer: function() {
-            const q = questions[this.state.currentIdx];
-            let isCorrect = false;
-
-            if (q.type === 'choice') {
-                isCorrect = (this.state.userAnswer === q.answer);
-            } else if (q.type === 'fill') {
-                // Allow "可" or "可是" (though grammar point is 可, sometimes students type more)
-                // Strict checking for this specific grammar point
-                isCorrect = q.answer.includes(this.state.userAnswer);
-            } else if (q.type === 'sort') {
-                isCorrect = (JSON.stringify(this.state.userAnswer) === JSON.stringify(q.answer));
+            // Screen: Start
+            if (gameState === 'start') {
+                return (
+                    <div className="bg-white/80 backdrop-blur-md rounded-3xl p-8 shadow-xl text-center fade-in border border-white">
+                        <div className="mb-6 flex justify-center">
+                            <div className="bg-teal-100 p-4 rounded-full">
+                                <BookOpen size={48} className="text-teal-600" />
+                            </div>
+                        </div>
+                        <h1 className="text-3xl font-bold text-slate-800 mb-2">清新語法大挑戰</h1>
+                        <h2 className="text-xl text-teal-600 font-medium mb-6">比、比較、比起來</h2>
+                        <p className="text-slate-500 mb-8 leading-relaxed">
+                            結合第 13-16 課的生詞（筆電、過年、孔子、文化日），<br/>
+                            一起來複習比較句型吧！
+                        </p>
+                        <button 
+                            onClick={startGame}
+                            className="group relative inline-flex items-center justify-center px-8 py-3 text-lg font-bold text-white transition-all duration-200 bg-teal-500 font-pj rounded-full focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-teal-600 hover:bg-teal-600 hover:scale-105 shadow-lg"
+                        >
+                            開始挑戰
+                            <ArrowRight className="ml-2 w-5 h-5 group-hover:translate-x-1 transition-transform" />
+                        </button>
+                    </div>
+                );
             }
 
-            this.showFeedback(isCorrect, q.explanation);
-            if(isCorrect) this.state.score++;
-        },
-
-        showFeedback: function(isCorrect, text) {
-            const overlay = document.getElementById('feedback-overlay');
-            const title = document.getElementById('fb-title');
-            const content = document.getElementById('fb-text');
-            
-            overlay.style.display = 'flex';
-            if (isCorrect) {
-                title.innerText = '系統同步成功';
-                title.className = 'feedback-title correct';
-                title.classList.add('glitch-effect');
-                content.innerText = 'Excellent! ' + text;
-            } else {
-                title.innerText = '數據連接失敗';
-                title.className = 'feedback-title wrong';
-                content.innerText = 'Correct Answer Required. \n\n' + text;
+            // Screen: End
+            if (gameState === 'end') {
+                return (
+                    <div className="bg-white/80 backdrop-blur-md rounded-3xl p-8 shadow-xl text-center fade-in border border-white max-w-md mx-auto">
+                        <div className="mb-6 flex justify-center">
+                            {score === 100 ? (
+                                <Trophy size={64} className="text-yellow-400 drop-shadow-sm" />
+                            ) : (
+                                <Star size={64} className="text-teal-400" />
+                            )}
+                        </div>
+                        <h2 className="text-2xl font-bold text-slate-800 mb-2">
+                            {score === 100 ? '太厲害了！滿分！' : score >= 60 ? '做得很好！' : '再接再厲！'}
+                        </h2>
+                        <p className="text-slate-500 mb-6">你的總分是：</p>
+                        <div className="text-6xl font-bold text-teal-500 mb-8">{score} <span className="text-2xl text-slate-400">/ 100</span></div>
+                        
+                        <button 
+                            onClick={startGame}
+                            className="inline-flex items-center px-6 py-3 bg-slate-100 text-slate-600 rounded-full font-bold hover:bg-slate-200 transition-colors"
+                        >
+                            <RefreshCw className="mr-2 w-5 h-5" />
+                            再玩一次
+                        </button>
+                    </div>
+                );
             }
-        },
 
-        nextQuestion: function() {
-            document.getElementById('feedback-overlay').style.display = 'none';
-            document.getElementById('fb-title').classList.remove('glitch-effect');
-            
-            this.state.currentIdx++;
-            
-            if (this.state.currentIdx < questions.length) {
-                this.renderQuestion();
-            } else {
-                this.endGame();
-            }
-        },
+            // Screen: Quiz
+            return (
+                <div className="bg-white/80 backdrop-blur-md rounded-3xl shadow-xl overflow-hidden border border-white fade-in min-h-[500px] flex flex-col">
+                    {/* Header */}
+                    <div className="bg-teal-50 p-4 flex justify-between items-center border-b border-teal-100">
+                        <div className="flex items-center gap-2">
+                            <span className="px-3 py-1 bg-teal-200 text-teal-800 rounded-full text-xs font-bold tracking-wider">
+                                {currentQ.lesson}
+                            </span>
+                            <span className="text-teal-700 font-bold">第 {currentQIndex + 1} / {questionsData.length} 題</span>
+                        </div>
+                        <div className="text-slate-500 font-medium text-sm">目前得分: {score}</div>
+                    </div>
+                    
+                    {/* Progress Bar */}
+                    <div className="w-full bg-teal-100 h-2">
+                        <div 
+                            className="bg-teal-400 h-2 transition-all duration-500 ease-out"
+                            style={{ width: `${((currentQIndex) / questionsData.length) * 100}%` }}
+                        ></div>
+                    </div>
 
-        endGame: function() {
-            this.switchScreen('result');
-            const finalScore = Math.round((this.state.score / 10) * 100);
-            document.getElementById('final-score').innerText = finalScore;
-            
-            let msg = '';
-            if (finalScore === 100) msg = '完美同步！你的語法核心運作正常。';
-            else if (finalScore >= 80) msg = '系統運行良好，僅有少量數據錯誤。';
-            else if (finalScore >= 60) msg = '系統勉強運行，建議重新校準語法模組。';
-            else msg = '警報：語法系統損壞嚴重，請立即重修。';
-            
-            document.getElementById('result-msg').innerText = msg;
-        }
-    };
+                    {/* Question Body */}
+                    <div className="p-6 md:p-8 flex-grow flex flex-col justify-center">
+                        <h3 className="text-xl md:text-2xl font-bold text-slate-700 mb-4 leading-relaxed text-center">
+                            {currentQ.question}
+                        </h3>
 
-    // Initialize
-    game.init();
+                        {currentQ.type === 'choice' && renderChoice()}
+                        {currentQ.type === 'fill' && renderFill()}
+                        {currentQ.type === 'order' && renderOrder()}
+                        
+                        {/* Feedback Area */}
+                        {feedback && (
+                            <div className={`mt-8 p-4 rounded-xl border animate-bounce-short ${feedback === 'correct' ? 'bg-green-50 border-green-200' : 'bg-red-50 border-red-200'}`}>
+                                <div className="flex items-start gap-3">
+                                    <div className="mt-1">
+                                        {feedback === 'correct' ? <CheckCircle className="text-green-500" /> : <XCircle className="text-red-500" />}
+                                    </div>
+                                    <div className="text-left">
+                                        <p className={`font-bold text-lg ${feedback === 'correct' ? 'text-green-700' : 'text-red-700'}`}>
+                                            {feedback === 'correct' ? '答對了！' : '答錯了！'}
+                                        </p>
+                                        <p className="text-slate-600 mt-1">
+                                            <span className="font-semibold mr-1">正確答案：</span>
+                                            {Array.isArray(currentQ.answer) ? currentQ.answer.join(' 或 ') : currentQ.answer}
+                                        </p>
+                                        <p className="text-sm text-slate-500 mt-2 bg-white/50 p-2 rounded-lg inline-block">
+                                            💡 {currentQ.explanation}
+                                        </p>
+                                    </div>
+                                </div>
+                                <div className="mt-4 text-right">
+                                    <button 
+                                        onClick={nextQuestion}
+                                        className="inline-flex items-center px-6 py-2 bg-teal-600 text-white rounded-lg hover:bg-teal-700 transition-colors shadow-md font-bold"
+                                    >
+                                        下一題 <ArrowRight className="ml-2 w-4 h-4" />
+                                    </button>
+                                </div>
+                            </div>
+                        )}
+                    </div>
+                </div>
+            );
+        };
 
-</script>
+        const root = ReactDOM.createRoot(document.getElementById('root'));
+        root.render(<App />);
+    </script>
 </body>
 </html>
